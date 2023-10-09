@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Input, Button, Resultdiv } from "./components";
 import "./App.css";
 
@@ -7,53 +7,65 @@ function App() {
     {
       id: 1,
       title: "books",
+      isUpdate: false,
     },
   ]);
   let [title, settitle] = useState("");
 
   const onsubmit = (e) => {
     e.preventDefault();
-    setlikes(() => {
-      const data = {
-        id: new Date().getTime(),
-        title: title,
-      };
-      return [...likes, data];
-    });
+
+    const data = {
+      id: new Date().getTime(),
+      title: title,
+      isUpdate: false,
+    };
+    const newlike = [...likes, data];
+    setlikes(newlike);
+
+    saveToLocal(newlike);
     settitle("");
   };
   useEffect(() => {
+    getFromStorage();
     console.log(likes);
-  }, [likes]);
+  }, []);
 
   const onDelete = (itemId) => {
     console.log("itemId", itemId);
     const filteredArray = likes.filter((l) => l.id !== itemId);
     console.log(filteredArray);
-    setlikes(filteredArray)
-     console.log(likes)
+    setlikes(filteredArray);
+    console.log(likes);
+    saveToLocal(filteredArray);
   };
-  
-  const onUpdate=(itemId)=>{
-    console.log("itemId",itemId)
-    return( <>
-      <form key="update-form" onSubmit={onsubmit}>
-        <Input
-          key="update-input"
-          label="Likes:"
-          name="likes"
-          type="text"
-          placeholder="Update yout liked item"
-          onChange={(e) => settitle(e.target.value)}
-          value={title}
-        ></Input>
-        <Button key="button" type="submit" name="Submit"></Button>
-      </form>
-      </>)
+
+  const onUpdate = (itemId, updatedTitle) => {
+    const findIndextoUpdate = likes.findIndex((obj) => obj.id === itemId);
+    const updatedItems = [...likes];
+    updatedItems[findIndextoUpdate] = {
+      ...updatedItems[findIndextoUpdate],
+      title: updatedTitle,
+    };
+    setlikes(updatedItems);
+    saveToLocal(updatedItems);
+  };
+
+  function saveToLocal(newTitles) {
+    localStorage.setItem("my-likes", JSON.stringify(newTitles));
   }
+
+  function getFromStorage() {
+    const storedTitles = JSON.parse(localStorage.getItem("my-likes"));
+    if (storedTitles) {
+      console.log("hi");
+      setlikes(storedTitles);
+    }
+  }
+
   return (
     <>
-      <form key="form" onSubmit={onsubmit}>
+      <form className="form" onSubmit={onsubmit}>
         <Input
           key="input"
           label="Likes:"
@@ -65,20 +77,19 @@ function App() {
         ></Input>
         <Button key="button" type="submit" name="Submit"></Button>
       </form>
-
+      <div className="result">
       {likes.map((val) => {
         return (
-          <div>
+          <div key={val.id} className="result-wrap">
             <Resultdiv
-              key={val.id}
               title={val.title}
               onDelete={() => onDelete(val.id)}
-              onUpdate={()=>onUpdate(val.id)}
-              
+              onUpdate={(updatedTitle) => onUpdate(val.id, updatedTitle)}
             ></Resultdiv>
           </div>
         );
       })}
+      </div>
     </>
   );
 }
