@@ -1,8 +1,11 @@
-# React + Vite
+## A CRUD app to manage likes
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Add your like in the form,submit.
+View your likes in the display,
+Edit and delete as you wish.
 
-Currently, two official plugins are available:
+## to run
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+    npm run dev
+
+## created with react+vite+javascript
