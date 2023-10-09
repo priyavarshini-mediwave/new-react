@@ -58,7 +58,7 @@ function App() {
   function getFromStorage() {
     const storedTitles = JSON.parse(localStorage.getItem("my-likes"));
     if (storedTitles) {
-      console.log("hi");
+      
       setlikes(storedTitles);
     }
   }
