@@ -3,13 +3,13 @@ import { Input, Button, Resultdiv } from "./components";
 import "./App.css";
 
 function App() {
-  let [likes, setlikes] = useState([
-    {
-      id: 1,
-      title: "books",
-      isUpdate: false,
-    },
-  ]);
+  let [likes, setlikes] = useState(getFromStorage());
+  // {
+  //   id: 1,
+  //   title: "books",
+  //   isUpdate: false,
+  // },
+
   let [title, settitle] = useState("");
 
   const onsubmit = (e) => {
@@ -23,13 +23,13 @@ function App() {
     const newlike = [...likes, data];
     setlikes(newlike);
 
-    saveToLocal(newlike);
+    //saveToLocal(newlike);
     settitle("");
   };
   useEffect(() => {
-    getFromStorage();
+    saveToLocal(likes);
     console.log(likes);
-  }, []);
+  }, [likes]);
 
   const onDelete = (itemId) => {
     console.log("itemId", itemId);
@@ -37,7 +37,7 @@ function App() {
     console.log(filteredArray);
     setlikes(filteredArray);
     console.log(likes);
-    saveToLocal(filteredArray);
+    //saveToLocal(filteredArray);
   };
 
   const onUpdate = (itemId, updatedTitle) => {
@@ -48,7 +48,7 @@ function App() {
       title: updatedTitle,
     };
     setlikes(updatedItems);
-    saveToLocal(updatedItems);
+    //saveToLocal(updatedItems);
   };
 
   function saveToLocal(newTitles) {
@@ -56,11 +56,12 @@ function App() {
   }
 
   function getFromStorage() {
-    const storedTitles = JSON.parse(localStorage.getItem("my-likes"));
-    if (storedTitles) {
-      
-      setlikes(storedTitles);
+    const savedValues = localStorage.getItem("my-likes");
+    if (savedValues) {
+      const storedTitles = JSON.parse(savedValues);
+      return storedTitles;
     }
+    return [];
   }
 
   return (
@@ -78,17 +79,17 @@ function App() {
         <Button key="button" type="submit" name="Submit"></Button>
       </form>
       <div className="result">
-      {likes.map((val) => {
-        return (
-          <div key={val.id} className="result-wrap">
-            <Resultdiv
-              title={val.title}
-              onDelete={() => onDelete(val.id)}
-              onUpdate={(updatedTitle) => onUpdate(val.id, updatedTitle)}
-            ></Resultdiv>
-          </div>
-        );
-      })}
+        {likes.map((val) => {
+          return (
+            <div key={val.id} className="result-wrap">
+              <Resultdiv
+                title={val.title}
+                onDelete={() => onDelete(val.id)}
+                onUpdate={(updatedTitle) => onUpdate(val.id, updatedTitle)}
+              ></Resultdiv>
+            </div>
+          );
+        })}
       </div>
     </>
   );
